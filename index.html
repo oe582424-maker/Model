@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>সুন্দরগঞ্জ মডেল সরকারি প্রাথমিক বিদ্যালয় - ডিজিটাল হাজিরা</title>
+  <meta name="description" content="সুন্দরগঞ্জ মডেল সরকারি প্রাথমিক বিদ্যালয়ের স্মার্ট ও দ্রুত ডিজিটাল শিক্ষার্থী হাজিরা ব্যবস্থাপনা সফটওয়্যার।" />
+  <meta property="og:title" content="সুন্দরগঞ্জ মডেল সরকারি প্রাথমিক বিদ্যালয় - ডিজিটাল হাজিরা" />
+  <meta property="og:description" content="সুন্দরগঞ্জ মডেল সরকারি প্রাথমিক বিদ্যালয়ের স্মার্ট ও দ্রুত ডিজিটাল শিক্ষার্থী হাজিরা ব্যবস্থাপনা সফটওয়্যার।" />
+
+  <!-- Google Fonts: Hind Siliguri -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Hind Siliguri"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+            },
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Supabase JS Client v2 CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    body {
+      font-family: 'Hind Siliguri', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    .slide-left {
+      animation: slideLeft 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes slideLeft {
+      from { opacity: 0; transform: translateX(35px) scale(0.96); }
+      to { opacity: 1; transform: translateX(0) scale(1); }
+    }
+    .slide-right {
+      animation: slideRight 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes slideRight {
+      from { opacity: 0; transform: translateX(-35px) scale(0.96); }
+      to { opacity: 1; transform: translateX(0) scale(1); }
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col">
+
+  <!-- Toast Notification Container -->
+  <div id="toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 transform -translate-y-20 opacity-0 pointer-events-none px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-2 text-sm font-medium"></div>
+
+  <!-- Main App Root -->
+  <div id="app" class="flex-1 flex flex-col max-w-md mx-auto w-full bg-slate-50 min-h-screen shadow-xl relative pb-16">
+    <!-- Top Header -->
+    <header class="bg-gradient-to-r from-emerald-700 via-emerald-600 to-teal-700 text-white px-4 py-3.5 shadow sticky top-0 z-30 flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-full bg-white/15 flex items-center justify-center border border-white/20">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+        </div>
+        <div>
+          <h1 class="text-sm font-bold tracking-tight leading-tight">সুন্দরগঞ্জ মডেল সরকারি প্রাথমিক বিদ্যালয়</h1>
+          <p id="headerSubTitle" class="text-xs text-emerald-100">ডিজিটাল হাজিরা ব্যবস্থাপনা</p>
+        </div>
+      </div>
+      <div id="userHeaderArea" class="flex items-center gap-2 hidden">
+        <button id="logoutBtn" title="লগআউট" class="text-xs bg-white/20 hover:bg-white/30 text-white px-2.5 py-1.5 rounded-lg font-medium transition flex items-center gap-1">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          লগআউট
+        </button>
+      </div>
+    </header>
+
+    <!-- Main View Container -->
+    <main id="mainView" class="flex-1 p-4 flex flex-col"></main>
+
+    <!-- Bottom Navigation Bar (Visible when logged in) -->
+    <nav id="bottomNav" class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white border-t border-slate-200 z-30 flex items-center justify-around py-2 px-1 shadow-lg hidden">
+      <button onclick="navigate('classes')" id="navClasses" class="flex flex-col items-center gap-1 text-emerald-600 font-semibold text-xs py-1 px-3 rounded-lg">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+        <span>শ্রেণিকক্ষ</span>
+      </button>
+      <button onclick="navigate('search')" id="navSearch" class="flex flex-col items-center gap-1 text-slate-500 font-medium text-xs py-1 px-3 rounded-lg">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <span>খুঁজুন</span>
+      </button>
+      <button onclick="navigate('report')" id="navReport" class="flex flex-col items-center gap-1 text-slate-500 font-medium text-xs py-1 px-3 rounded-lg">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        <span>প্রতিবেদন</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Shared Modal Container -->
+  <div id="modalContainer" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+    <div id="modalBox" class="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden p-5"></div>
+  </div>
+
+  <script>
+    // --- SUPABASE CONFIGURATION ---
+    const SUPABASE_URL = "https://irndbgyyvgktljgtqobv.supabase.co";
+    // Normalize Anon key JWT
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlybmRiZ3l5dmdrdGxqZ3Rxb2J2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk3Mjg4MjUsImV4cCI6MjEwNTMwNDgyNX0.WUFTF6YEBM_P9OUZVbVUckmpevACg5i2itiNH3Per5c";
+
+    let supabaseClient = null;
+    try {
+      if (window.supabase && window.supabase.createClient) {
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      }
+    } catch (e) {
+      console.error("Supabase init error:", e);
+    }
+
+    // --- APPLICATION STATE ---
+    let currentUser = null; // { id, full_name, pin_code, role: 'TEACHER'|'HEAD_TEACHER' }
+    let currentTab = 'classes'; // 'classes' | 'search' | 'report' | 'attendance'
+    let classesCache = [];
+    let activeAttendanceClass = null;
+    let attendanceStudents = [];
+    let attendanceIndex = 0;
+    let sessionAttendanceMap = {}; // student_id -> 'PRESENT' | 'ABSENT'
+    let attendanceHistoryStack = []; // array of student_id
+
+    // Bengali Digits Helper
+    const toBengaliNumber = (num) => {
+      if (num === null || num === undefined) return '';
+      const bDigits = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+      return String(num).replace(/[0-9]/g, d => bDigits[parseInt(d)]);
+    };
+
+    const getTodayDateStr = () => {
+      const d = new Date();
+      const year = d.getFullYear();
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
+    const getFormattedBengaliDate = (dateStr) => {
+      if (!dateStr) return '';
+      const parts = dateStr.split('-');
+      if (parts.length === 3) {
+        return `${toBengaliNumber(parts[2])}/${toBengaliNumber(parts[1])}/${toBengaliNumber(parts[0])}`;
+      }
+      return dateStr;
+    };
+
+    // --- TOAST NOTIFICATIONS ---
+    function showToast(msg, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.className = `fixed top-4 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 transform translate-y-0 opacity-100 px-4 py-2.5 rounded-xl shadow-lg flex items-center gap-2 text-sm font-semibold ${
+        type === 'error' ? 'bg-red-600 text-white' : 'bg-emerald-600 text-white'
+      }`;
+      setTimeout(() => {
+        toast.className = toast.className.replace('translate-y-0 opacity-100', '-translate-y-20 opacity-0');
+      }, 3000);
+    }
+
+    // --- SESSION MANAGEMENT ---
+    function initSession() {
+      const saved = localStorage.getItem('sundarganj_user_session');
+      if (saved) {
+        try {
+          currentUser = JSON.parse(saved);
+          renderAppHeader();
+          navigate('classes');
+          return;
+        } catch (e) {
+          localStorage.removeItem('sundarganj_user_session');
+        }
+      }
+      renderLoginView();
+    }
+
+    function renderAppHeader() {
+      const userHeader = document.getElementById('userHeaderArea');
+      const headerSubTitle = document.getElementById('headerSubTitle');
+      const bottomNav = document.getElementById('bottomNav');
+
+      if (currentUser) {
+        userHeader.classList.remove('hidden');
+        bottomNav.classList.remove('hidden');
+        const roleLabel = currentUser.role === 'HEAD_TEACHER' ? 'প্রধান শিক্ষক' : 'সহকারী শিক্ষক';
+        headerSubTitle.textContent = `${currentUser.full_name} (${roleLabel})`;
+      } else {
+        userHeader.classList.add('hidden');
+        bottomNav.classList.add('hidden');
+        headerSubTitle.textContent = 'ডিজিটাল হাজিরা ব্যবস্থাপনা';
+      }
+    }
+
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('sundarganj_user_session');
+      currentUser = null;
+      renderAppHeader();
+      renderLoginView();
+      showToast('সফলভাবে লগআউট করা হয়েছে');
+    });
+
+    // --- ROUTING / NAVIGATION ---
+    function navigate(tab) {
+      currentTab = tab;
+      ['classes', 'search', 'report'].forEach(t => {
+        const el = document.getElementById('nav' + t.charAt(0).toUpperCase() + t.slice(1));
+        if (el) {
+          if (t === tab) {
+            el.className = "flex flex-col items-center gap-1 text-emerald-600 font-bold text-xs py-1 px-3 rounded-lg";
+          } else {
+            el.className = "flex flex-col items-center gap-1 text-slate-500 font-medium text-xs py-1 px-3 rounded-lg";
+          }
+        }
+      });
+
+      if (!currentUser) {
+        renderLoginView();
+        return;
+      }
+
+      if (tab === 'classes') {
+        if (currentUser.role === 'HEAD_TEACHER') {
+          renderHeadTeacherDashboard();
+        } else {
+          renderTeacherDashboard();
+        }
+      } else if (tab === 'search') {
+        renderStudentSearchView();
+      } else if (tab === 'report') {
+        renderMonthlyReportView();
+      }
+    }
+
+    // --- 1. LOGIN & AUTO-REGISTRATION ---
+    function renderLoginView() {
+      const main = document.getElementById('mainView');
+      main.innerHTML = `
+        <div class="flex-1 flex flex-col justify-center py-6">
+          <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+            <div class="text-center mb-6">
+              <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+              </div>
+              <h2 class="text-xl font-bold text-slate-800">শিক্ষক লগইন</h2>
+              <p class="text-xs text-slate-500 mt-1">পূর্ণ নাম ও ৫ ডিজিটের পিন কোড দিয়ে প্রবেশ করুন</p>
+            </div>
+
+            <form id="loginForm" class="space-y-4" onsubmit="handleLoginSubmit(event)">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">পূর্ণ নাম (বাংলা বা ইংরেজি)</label>
+                <input type="text" id="loginName" required placeholder="যেমন: মো: রফিকুল ইসলাম" 
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" />
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">৫ ডিজিট পিন কোড</label>
+                <input type="password" id="loginPin" required maxlength="5" pattern="[0-9]{5}" placeholder="*****" 
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm tracking-widest text-center text-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" />
+              </div>
+              <button type="submit" id="loginBtn" 
+                class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl shadow transition duration-150 flex items-center justify-center gap-2">
+                <span>লগইন করুন</span>
+              </button>
+            </form>
+
+            <div class="mt-6 pt-5 border-t border-slate-100 text-center">
+              <p class="text-xs text-slate-500">নতুন শিক্ষক? লগইন বাটন চাপলেই স্বয়ংক্রিয় নিবন্ধনের সুযোগ পাবেন।</p>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    async function handleLoginSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('loginName').value.trim();
+      const pin = document.getElementById('loginPin').value.trim();
+
+      if (!name || pin.length !== 5) {
+        showToast('দয়া করে সঠিক নাম ও ৫ সংখ্যার পিন দিন', 'error');
+        return;
+      }
+
+      const submitBtn = document.getElementById('loginBtn');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<span>যাচাই করা হচ্ছে...</span>`;
+
+      try {
+        if (!supabaseClient) throw new Error('Supabase client not initialized');
+        const { data, error } = await supabaseClient
+          .from('profiles')
+          .select('*')
+          .ilike('full_name', name)
+          .eq('pin_code', pin)
+          .maybeSingle();
+
+        if (error) {
+          console.warn("Profile query issue:", error);
+        }
+
+        if (data) {
+          // User found!
+          currentUser = data;
+          localStorage.setItem('sundarganj_user_session', JSON.stringify(currentUser));
+          renderAppHeader();
+          showToast(`স্বাগতম, ${currentUser.full_name}!`);
+          navigate('classes');
+        } else {
+          // User not found -> prompt auto-registration
+          showAutoRegisterModal(name, pin);
+        }
+      } catch (err) {
+        console.error(err);
+        showAutoRegisterModal(name, pin);
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = `<span>লগইন করুন</span>`;
+        }
+      }
+    }
+
+    function showAutoRegisterModal(name, pin) {
+      const modalBox = document.getElementById('modalBox');
+      modalBox.innerHTML = `
+        <div class="text-center">
+          <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-2">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+          </div>
+          <h3 class="text-base font-bold text-slate-800">অ্যাকাউন্ট পাওয়া যায়নি</h3>
+          <p class="text-xs text-slate-500 mt-1">আপনি কি একজন নতুন শিক্ষক হিসেবে নিবন্ধন করতে চান?</p>
+          
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 mt-3 text-left text-xs space-y-1">
+            <div><span class="text-slate-500">নাম:</span> <span class="font-bold text-slate-700">${name}</span></div>
+            <div><span class="text-slate-500">পিন:</span> <span class="font-bold text-slate-700">*****</span></div>
+          </div>
+
+          <div class="mt-4 text-left">
+            <label class="block text-xs font-semibold text-slate-700 mb-1.5">আপনার পদবী নির্বাচন করুন:</label>
+            <div class="grid grid-cols-2 gap-2">
+              <label class="flex items-center gap-2 p-2.5 border border-slate-200 rounded-xl cursor-pointer hover:bg-emerald-50 hover:border-emerald-300 transition has-[:checked]:border-emerald-600 has-[:checked]:bg-emerald-50">
+                <input type="radio" name="regRole" value="TEACHER" checked class="text-emerald-600 focus:ring-emerald-500" />
+                <span class="text-xs font-semibold text-slate-800">সহকারী শিক্ষক</span>
+              </label>
+              <label class="flex items-center gap-2 p-2.5 border border-slate-200 rounded-xl cursor-pointer hover:bg-emerald-50 hover:border-emerald-300 transition has-[:checked]:border-emerald-600 has-[:checked]:bg-emerald-50">
+                <input type="radio" name="regRole" value="HEAD_TEACHER" class="text-emerald-600 focus:ring-emerald-500" />
+                <span class="text-xs font-semibold text-slate-800">প্রধান শিক্ষক</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="mt-5 flex gap-2">
+            <button onclick="closeModal()" class="flex-1 py-2.5 px-3 rounded-xl border border-slate-300 text-xs font-semibold text-slate-600 hover:bg-slate-100">বাতিল</button>
+            <button onclick="executeRegistration('${name.replace(/'/g, "\\'")}', '${pin}')" class="flex-1 py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow">নিবন্ধন সম্পন্ন করুন</button>
+          </div>
+        </div>
+      `;
+      openModal();
+    }
+
+    async function executeRegistration(name, pin) {
+      const roleElem = document.querySelector('input[name="regRole"]:checked');
+      const role = roleElem ? roleElem.value : 'TEACHER';
+
+      try {
+        let newRecord = {
+          id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : 'prof_' + Date.now(),
+          full_name: name,
+          pin_code: pin,
+          role: role
+        };
+
+        if (supabaseClient) {
+          const { data, error } = await supabaseClient
+            .from('profiles')
+            .insert([newRecord])
+            .select()
+            .maybeSingle();
+
+          if (!error && data) {
+            newRecord = data;
+          }
+        }
+
+        currentUser = newRecord;
+        localStorage.setItem('sundarganj_user_session', JSON.stringify(currentUser));
+        closeModal();
+        renderAppHeader();
+        showToast('নিবন্ধন সফল হয়েছে!');
+        navigate('classes');
+      } catch (e) {
+        console.error("Reg error:", e);
+        // Fallback local persistence
+        currentUser = { id: 'user_' + Date.now(), full_name: name, pin_code: pin, role: role };
+        localStorage.setItem('sundarganj_user_session', JSON.stringify(currentUser));
+        closeModal();
+        renderAppHeader();
+        showToast('নিবন্ধন সম্পন্ন হয়েছে!');
+        navigate('classes');
+      }
+    }
+
+    // --- 2. TEACHER DASHBOARD ---
+    async function renderTeacherDashboard() {
+      const main = document.getElementById('mainView');
+      main.innerHTML = `
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h2 class="text-base font-bold text-slate-800">শ্রেণিকক্ষসমূহ</h2>
+            <p class="text-xs text-slate-500">তারিখ: ${getFormattedBengaliDate(getTodayDateStr())}</p>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button onclick="showQuickAddModal()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold shadow flex items-center gap-1">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              <span>নতুন যোগ</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="classesListContainer" class="space-y-3">
+          <div class="py-12 text-center text-slate-400">
+            <div class="animate-spin w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full mx-auto mb-2"></div>
+            <p class="text-xs">শ্রেণি তালিকা লোড হচ্ছে...</p>
+          </div>
+        </div>
+      `;
+
+      await loadClasses();
+    }
+
+    async function loadClasses() {
+      const container = document.getElementById('classesListContainer');
+      if (!container) return;
+
+      try {
+        let classes = [];
+        if (supabaseClient) {
+          const { data, error } = await supabaseClient
+            .from('classes')
+            .select(`
+              id, class_name, section_name, created_by,
+              students ( id )
+            `)
+            .order('class_name', { ascending: true });
+
+          if (!error && data) {
+            classes = data;
+          }
+        }
+
+        // Cache classes
+        classesCache = classes || [];
+
+        // Check if no classes exist -> Provide 1-click Demo Seed Data button
+        if (classesCache.length === 0) {
+          container.innerHTML = `
+            <div class="bg-white rounded-2xl p-6 text-center border border-dashed border-slate-300">
+              <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-3">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+              </div>
+              <h3 class="text-sm font-bold text-slate-800">এখনো কোনো শ্রেণি যোগ করা হয়নি</h3>
+              <p class="text-xs text-slate-500 mt-1 mb-4">হাজিরা শুরু করার জন্য শ্রেণি বা নমুনা ডেটা লোড করুন।</p>
+              <div class="flex flex-col gap-2">
+                <button onclick="seedSampleData()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2.5 px-4 rounded-xl shadow transition">
+                  🌱 নমুনা ডেটা লোড করুন (১ম-৫ম শ্রেণি ও শিক্ষার্থী)
+                </button>
+                <button onclick="showAddClassModal()" class="border border-slate-300 text-slate-700 hover:bg-slate-50 text-xs font-semibold py-2 px-4 rounded-xl">
+                  + নতুন শ্রেণি যোগ করুন
+                </button>
+              </div>
+            </div>
+          `;
+          return;
+        }
+
+        // Check today's attendance for each class
+        const todayStr = getTodayDateStr();
+        let classAttendanceSummary = {};
+
+        if (supabaseClient) {
+          const { data: attData } = await supabaseClient
+            .from('attendance')
+            .select('class_id, status')
+            .eq('attendance_date', todayStr);
+
+          if (attData) {
+            attData.forEach(row => {
+              if (!classAttendanceSummary[row.class_id]) {
+                classAttendanceSummary[row.class_id] = { present: 0, absent: 0 };
+              }
+              if (row.status === 'PRESENT') classAttendanceSummary[row.class_id].present++;
+              else classAttendanceSummary[row.class_id].absent++;
+            });
+          }
+        }
+
+        let html = '';
+        classesCache.forEach(cls => {
+          const studentCount = cls.students ? cls.students.length : 0;
+          const att = classAttendanceSummary[cls.id];
+          const hasAttToday = att && (att.present + att.absent > 0);
+
+          html += `
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex flex-col gap-3 transition hover:shadow-md">
+              <div class="flex items-start justify-between">
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-bold text-sm">
+                      ${cls.class_name ? cls.class_name.substring(0, 2) : 'শ্র'}
+                    </span>
+                    <div>
+                      <h3 class="font-bold text-slate-800 text-base leading-tight">${cls.class_name}</h3>
+                      <p class="text-xs text-slate-500 font-medium">শাখা: ${cls.section_name || 'সাধারণ'}</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <span class="inline-block bg-slate-100 text-slate-700 text-xs px-2 py-0.5 rounded-md font-semibold">
+                    মোট শিক্ষার্থী: ${toBengaliNumber(studentCount)}
+                  </span>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between pt-2 border-t border-slate-100">
+                <div class="text-xs">
+                  ${hasAttToday ? `
+                    <span class="text-emerald-600 font-semibold flex items-center gap-1">
+                      <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                      আজকের হাজিরা সম্পন্ন (${toBengaliNumber(att.present)}/${toBengaliNumber(studentCount)})
+                    </span>
+                  ` : `
+                    <span class="text-amber-600 font-medium flex items-center gap-1">
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                      আজকের হাজিরা বাকি আছে
+                    </span>
+                  `}
+                </div>
+                <button onclick="startAttendanceFlow('${cls.id}')" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold py-2 px-3.5 rounded-xl shadow transition flex items-center gap-1">
+                  <span>${hasAttToday ? 'হাজিরা সংশোধন' : 'হাজিরা নিন'}</span>
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </button>
+              </div>
+            </div>
+          `;
+        });
+
+        container.innerHTML = html;
+      } catch (err) {
+        console.error("Classes load error:", err);
+        container.innerHTML = `<div class="p-4 text-center text-xs text-red-500">ডেটা লোড করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।</div>`;
+      }
+    }
+
+    // --- 3. HEAD TEACHER DASHBOARD ---
+    async function renderHeadTeacherDashboard() {
+      const main = document.getElementById('mainView');
+      const todayStr = getTodayDateStr();
+
+      main.innerHTML = `
+        <div class="mb-4">
+          <div class="flex items-center justify-between">
+            <h2 class="text-base font-bold text-slate-800">সার্বিক হাজিরা রিপোর্ট</h2>
+            <span class="text-xs bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-md">প্রধান শিক্ষক প্যানেল</span>
+          </div>
+          <p class="text-xs text-slate-500">সকল শ্রেণির দৈনিক উপস্থিতি নিরীক্ষণ করুন</p>
+        </div>
+
+        <!-- Filter Controls -->
+        <div class="bg-white rounded-2xl p-3.5 shadow-sm border border-slate-200 mb-4 space-y-3">
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">তারিখ</label>
+              <input type="date" id="htFilterDate" value="${todayStr}" onchange="loadHeadTeacherOverview()" 
+                class="w-full px-2.5 py-1.5 rounded-xl border border-slate-300 text-xs font-medium focus:ring-1 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">শ্রেণি / শাখা</label>
+              <select id="htFilterClass" onchange="loadHeadTeacherOverview()" 
+                class="w-full px-2.5 py-1.5 rounded-xl border border-slate-300 text-xs font-medium focus:ring-1 focus:ring-emerald-500">
+                <option value="ALL">সকল শ্রেণি</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Metric Cards -->
+        <div class="grid grid-cols-2 gap-2.5 mb-4">
+          <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm">
+            <p class="text-xs text-slate-500 font-medium">মোট শিক্ষার্থী</p>
+            <p id="htTotalStudents" class="text-xl font-extrabold text-slate-800 mt-0.5">০</p>
+          </div>
+          <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-sm">
+            <p class="text-xs text-slate-500 font-medium">উপস্থিতির হার</p>
+            <p id="htAttendanceRate" class="text-xl font-extrabold text-emerald-600 mt-0.5">০%</p>
+          </div>
+          <div class="bg-emerald-50 p-3 rounded-2xl border border-emerald-100 shadow-sm">
+            <p class="text-xs text-emerald-700 font-medium">মোট উপস্থিত</p>
+            <p id="htTotalPresent" class="text-xl font-extrabold text-emerald-700 mt-0.5">০</p>
+          </div>
+          <div class="bg-red-50 p-3 rounded-2xl border border-red-100 shadow-sm">
+            <p class="text-xs text-red-700 font-medium">মোট অনুপস্থিত</p>
+            <p id="htTotalAbsent" class="text-xl font-extrabold text-red-700 mt-0.5">০</p>
+          </div>
+        </div>
+
+        <!-- Student Attendance List -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden flex-1 flex flex-col">
+          <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
+            <h3 class="text-xs font-bold text-slate-700">শিক্ষার্থীভিত্তিক তালিকা</h3>
+            <span id="htListCount" class="text-[11px] text-slate-400">০ জন</span>
+          </div>
+          <div id="htStudentsList" class="divide-y divide-slate-100 overflow-y-auto max-h-96">
+            <div class="p-8 text-center text-xs text-slate-400">লোড হচ্ছে...</div>
+          </div>
+        </div>
+      `;
+
+      await populateHeadTeacherClassesDropdown();
+      await loadHeadTeacherOverview();
+    }
+
+    async function populateHeadTeacherClassesDropdown() {
+      const select = document.getElementById('htFilterClass');
+      if (!select) return;
+      try {
+        if (!classesCache || classesCache.length === 0) {
+          if (supabaseClient) {
+            const { data } = await supabaseClient.from('classes').select('*').order('class_name');
+            classesCache = data || [];
+          }
+        }
+        select.innerHTML = '<option value="ALL">সকল শ্রেণি</option>';
+        classesCache.forEach(c => {
+          select.innerHTML += `<option value="${c.id}">${c.class_name} (${c.section_name || 'সাধারণ'})</option>`;
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    async function loadHeadTeacherOverview() {
+      const dateVal = document.getElementById('htFilterDate')?.value || getTodayDateStr();
+      const classVal = document.getElementById('htFilterClass')?.value || 'ALL';
+      const listContainer = document.getElementById('htStudentsList');
+
+      if (!listContainer) return;
+      listContainer.innerHTML = `<div class="p-8 text-center text-xs text-slate-400">তথ্য বিশ্লেষণ করা হচ্ছে...</div>`;
+
+      try {
+        if (!supabaseClient) return;
+
+        // Fetch students
+        let studentQuery = supabaseClient
+          .from('students')
+          .select('id, student_name, roll_number, class_id, classes(class_name, section_name)')
+          .order('roll_number', { ascending: true });
+
+        if (classVal !== 'ALL') {
+          studentQuery = studentQuery.eq('class_id', classVal);
+        }
+
+        const { data: studentsData } = await studentQuery;
+        const students = studentsData || [];
+
+        // Fetch attendance for this date
+        let attQuery = supabaseClient
+          .from('attendance')
+          .select('student_id, status, class_id')
+          .eq('attendance_date', dateVal);
+
+        if (classVal !== 'ALL') {
+          attQuery = attQuery.eq('class_id', classVal);
+        }
+
+        const { data: attData } = await attQuery;
+        const attMap = {};
+        (attData || []).forEach(a => {
+          attMap[a.student_id] = a.status;
+        });
+
+        let presentCount = 0;
+        let absentCount = 0;
+
+        students.forEach(s => {
+          const status = attMap[s.id];
+          if (status === 'PRESENT') presentCount++;
+          else if (status === 'ABSENT') absentCount++;
+        });
+
+        const totalStudents = students.length;
+        const recordedCount = presentCount + absentCount;
+        const rate = recordedCount > 0 ? Math.round((presentCount / recordedCount) * 100) : 0;
+
+        document.getElementById('htTotalStudents').textContent = toBengaliNumber(totalStudents);
+        document.getElementById('htTotalPresent').textContent = toBengaliNumber(presentCount);
+        document.getElementById('htTotalAbsent').textContent = toBengaliNumber(absentCount);
+        document.getElementById('htAttendanceRate').textContent = `${toBengaliNumber(rate)}%`;
+        document.getElementById('htListCount').textContent = `${toBengaliNumber(totalStudents)} জন শিক্ষার্থী`;
+
+        if (students.length === 0) {
+          listContainer.innerHTML = `<div class="p-8 text-center text-xs text-slate-400">কোনো শিক্ষার্থী পাওয়া যায়নি।</div>`;
+          return;
+        }
+
+        let html = '';
+        students.forEach(s => {
+          const status = attMap[s.id];
+          let badgeHtml = '';
+          if (status === 'PRESENT') {
+            badgeHtml = `<span class="bg-emerald-100 text-emerald-700 text-xs font-bold px-2 py-0.5 rounded-full">উপস্থিত</span>`;
+          } else if (status === 'ABSENT') {
+            badgeHtml = `<span class="bg-red-100 text-red-700 text-xs font-bold px-2 py-0.5 rounded-full">অনুপস্থিত</span>`;
+          } else {
+            badgeHtml = `<span class="bg-slate-100 text-slate-500 text-xs font-medium px-2 py-0.5 rounded-full">গৃহীত হয়নি</span>`;
+          }
+
+          const className = s.classes?.class_name || '';
+          const secName = s.classes?.section_name || '';
+
+          html += `
+            <div class="p-3 flex items-center justify-between hover:bg-slate-50">
+              <div class="flex items-center gap-2.5">
+                <span class="w-8 h-8 rounded-full bg-slate-100 font-bold text-xs flex items-center justify-center text-slate-600">
+                  ${toBengaliNumber(s.roll_number)}
+                </span>
+                <div>
+                  <h4 class="text-xs font-bold text-slate-800">${s.student_name}</h4>
+                  <p class="text-[11px] text-slate-500">${className} ${secName ? `(${secName})` : ''}</p>
+                </div>
+              </div>
+              <div>${badgeHtml}</div>
+            </div>
+          `;
+        });
+
+        listContainer.innerHTML = html;
+      } catch (err) {
+        console.error(err);
+        listContainer.innerHTML = `<div class="p-4 text-center text-xs text-red-500">তথ্য লোড করতে সমস্যা হয়েছে।</div>`;
+      }
+    }
+
+    // --- 4. CARD-BASED ATTENDANCE FLOW (SWIPE/TAP UX) ---
+    async function startAttendanceFlow(classId) {
+      activeAttendanceClass = classesCache.find(c => c.id === classId) || { id: classId, class_name: 'শ্রেণি' };
+      const main = document.getElementById('mainView');
+
+      main.innerHTML = `
+        <div class="flex-1 flex flex-col justify-center items-center py-8">
+          <div class="animate-spin w-8 h-8 border-3 border-emerald-500 border-t-transparent rounded-full mb-3"></div>
+          <p class="text-xs text-slate-500 font-semibold">শিক্ষার্থীদের তালিকা প্রস্তুত করা হচ্ছে...</p>
+        </div>
+      `;
+
+      try {
+        if (!supabaseClient) throw new Error('Supabase client missing');
+
+        // Fetch students of this class
+        const { data: students, error } = await supabaseClient
+          .from('students')
+          .select('*')
+          .eq('class_id', classId)
+          .order('roll_number', { ascending: true });
+
+        if (error || !students || students.length === 0) {
+          showToast('এই শ্রেণিতে কোনো শিক্ষার্থী নেই। প্রথমে শিক্ষার্থী যোগ করুন।', 'error');
+          navigate('classes');
+          return;
+        }
+
+        attendanceStudents = students;
+        attendanceIndex = 0;
+        sessionAttendanceMap = {};
+        attendanceHistoryStack = [];
+
+        // Pre-fetch today's existing attendance if any
+        const todayStr = getTodayDateStr();
+        const { data: existingAtt } = await supabaseClient
+          .from('attendance')
+          .select('student_id, status')
+          .eq('class_id', classId)
+          .eq('attendance_date', todayStr);
+
+        if (existingAtt) {
+          existingAtt.forEach(a => {
+            sessionAttendanceMap[a.student_id] = a.status;
+          });
+        }
+
+        renderAttendanceCardUI();
+      } catch (err) {
+        console.error(err);
+        showToast('শিক্ষার্থীদের তালিকা লোড করা যায়নি', 'error');
+        navigate('classes');
+      }
+    }
+
+    function renderAttendanceCardUI() {
+      const main = document.getElementById('mainView');
+      const total = attendanceStudents.length;
+      const current = attendanceIndex + 1;
+      const progressPercent = Math.round(((attendanceIndex) / total) * 100);
+      const student = attendanceStudents[attendanceIndex];
+
+      if (!student) {
+        showAttendanceSummaryModal();
+        return;
+      }
+
+      const existingStatus = sessionAttendanceMap[student.id];
+
+      main.innerHTML = `
+        <div class="flex-1 flex flex-col justify-between max-w-sm mx-auto w-full">
+          <!-- Top Flow Bar -->
+          <div class="mb-3">
+            <div class="flex items-center justify-between text-xs mb-1.5">
+              <button onclick="navigate('classes')" class="text-slate-500 hover:text-slate-800 font-semibold flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                <span>ফিরে যান</span>
+              </button>
+              <div class="text-right">
+                <span class="font-bold text-slate-800">${activeAttendanceClass.class_name}</span>
+                <span class="text-slate-500">(${activeAttendanceClass.section_name || 'শাখা'})</span>
+              </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
+              <div class="bg-emerald-500 h-full transition-all duration-300 rounded-full" style="width: ${progressPercent}%;"></div>
+            </div>
+            <div class="flex justify-between items-center text-[11px] text-slate-500 mt-1">
+              <span>${toBengaliNumber(attendanceIndex)} / ${toBengaliNumber(total)} শিক্ষার্থী সম্পন্ন</span>
+              <span>${toBengaliNumber(progressPercent)}%</span>
+            </div>
+          </div>
+
+          <!-- Student Card (One at a time) -->
+          <div id="studentCardElement" class="slide-left flex-1 bg-white rounded-3xl p-6 shadow-xl border border-slate-100 flex flex-col items-center justify-center my-3 relative overflow-hidden">
+            <!-- Undo Button -->
+            <div class="absolute top-4 left-4">
+              <button onclick="handleUndoAttendance()" ${attendanceIndex === 0 ? 'disabled' : ''} 
+                class="text-xs px-3 py-1.5 rounded-xl border border-slate-200 text-slate-600 font-semibold flex items-center gap-1 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+                <span>পেছনে যান</span>
+              </button>
+            </div>
+
+            <!-- Bulk Shortcut Button -->
+            <div class="absolute top-4 right-4">
+              <button onclick="handleBulkPresent()" class="text-xs px-2.5 py-1.5 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold hover:bg-emerald-100 flex items-center gap-1">
+                <span>সবাই উপস্থিত</span>
+              </button>
+            </div>
+
+            <!-- Roll Number Badge -->
+            <div class="mt-8 mb-4 flex flex-col items-center">
+              <span class="text-xs font-semibold text-slate-400 tracking-wider">রোল নম্বর</span>
+              <div class="text-5xl font-black text-slate-800 tracking-tight mt-0.5">
+                ${toBengaliNumber(student.roll_number)}
+              </div>
+            </div>
+
+            <!-- Avatar -->
+            <div class="w-20 h-20 rounded-2xl bg-gradient-to-tr from-emerald-100 to-teal-50 border-2 border-emerald-200 flex items-center justify-center text-emerald-700 text-2xl font-bold mb-3 shadow-inner">
+              ${student.student_name ? student.student_name.charAt(0) : 'শ'}
+            </div>
+
+            <!-- Student Name -->
+            <h2 class="text-xl font-bold text-slate-800 text-center px-2 leading-snug">
+              ${student.student_name}
+            </h2>
+            <p class="text-xs text-slate-500 mt-1">${activeAttendanceClass.class_name} • রোল ${toBengaliNumber(student.roll_number)}</p>
+
+            ${existingStatus ? `
+              <div class="mt-4 px-3 py-1 rounded-full text-xs font-bold ${existingStatus === 'PRESENT' ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}">
+                পূর্বে চিহ্নিত: ${existingStatus === 'PRESENT' ? 'উপস্থিত' : 'অনুপস্থিত'}
+              </div>
+            ` : ''}
+          </div>
+
+          <!-- Two Thumb-Friendly Large Buttons -->
+          <div class="grid grid-cols-2 gap-3 pt-2">
+            <!-- Absent (No) -->
+            <button onclick="recordStudentAttendance('ABSENT')" 
+              class="active:scale-95 transition transform bg-red-500 hover:bg-red-600 text-white font-bold py-4 px-4 rounded-2xl shadow-lg shadow-red-500/20 flex flex-col items-center justify-center gap-1">
+              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+              <span class="text-base tracking-wide">অনুপস্থিত (No)</span>
+            </button>
+
+            <!-- Present (Yes) -->
+            <button onclick="recordStudentAttendance('PRESENT')" 
+              class="active:scale-95 transition transform bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-4 px-4 rounded-2xl shadow-lg shadow-emerald-500/20 flex flex-col items-center justify-center gap-1">
+              <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+              <span class="text-base tracking-wide">উপস্থিত (Yes)</span>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    async function recordStudentAttendance(status) {
+      const student = attendanceStudents[attendanceIndex];
+      if (!student) return;
+
+      sessionAttendanceMap[student.id] = status;
+      attendanceHistoryStack.push(student.id);
+
+      // Async write to Supabase
+      saveAttendanceRecordToSupabase(student.id, status);
+
+      // Slide animation & go to next
+      const card = document.getElementById('studentCardElement');
+      if (card) {
+        card.classList.remove('slide-left');
+        card.classList.add(status === 'PRESENT' ? 'slide-left' : 'slide-left');
+      }
+
+      setTimeout(() => {
+        attendanceIndex++;
+        if (attendanceIndex < attendanceStudents.length) {
+          renderAttendanceCardUI();
+        } else {
+          showAttendanceSummaryModal();
+        }
+      }, 150);
+    }
+
+    async function saveAttendanceRecordToSupabase(studentId, status) {
+      const todayStr = getTodayDateStr();
+      const teacherId = currentUser ? currentUser.id : null;
+
+      try {
+        if (!supabaseClient) return;
+
+        // Upsert record: check if exists today
+        const { data: existing } = await supabaseClient
+          .from('attendance')
+          .select('id')
+          .eq('student_id', studentId)
+          .eq('attendance_date', todayStr)
+          .maybeSingle();
+
+        if (existing) {
+          await supabaseClient
+            .from('attendance')
+            .update({ status: status, teacher_id: teacherId })
+            .eq('id', existing.id);
+        } else {
+          await supabaseClient
+            .from('attendance')
+            .insert([{
+              id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : 'att_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+              student_id: studentId,
+              class_id: activeAttendanceClass.id,
+              teacher_id: teacherId,
+              attendance_date: todayStr,
+              status: status
+            }]);
+        }
+      } catch (e) {
+        console.error("Attendance save error:", e);
+      }
+    }
+
+    function handleUndoAttendance() {
+      if (attendanceIndex > 0) {
+        attendanceIndex--;
+        attendanceHistoryStack.pop();
+        renderAttendanceCardUI();
+      }
+    }
+
+    function handleBulkPresent() {
+      const remainingCount = attendanceStudents.length - attendanceIndex;
+      if (confirm(`আপনি কি অবশিষ্ট ${toBengaliNumber(remainingCount)} জন শিক্ষার্থীকে একবারে 'উপস্থিত' হিসেবে চিহ্নিত করতে চান?`)) {
+        for (let i = attendanceIndex; i < attendanceStudents.length; i++) {
+          const s = attendanceStudents[i];
+          sessionAttendanceMap[s.id] = 'PRESENT';
+          saveAttendanceRecordToSupabase(s.id, 'PRESENT');
+        }
+        attendanceIndex = attendanceStudents.length;
+        showAttendanceSummaryModal();
+      }
+    }
+
+    function showAttendanceSummaryModal() {
+      let present = 0;
+      let absent = 0;
+      const absentList = [];
+
+      attendanceStudents.forEach(s => {
+        const st = sessionAttendanceMap[s.id] || 'PRESENT';
+        if (st === 'PRESENT') {
+          present++;
+        } else {
+          absent++;
+          absentList.push(s);
+        }
+      });
+
+      const total = attendanceStudents.length;
+      const rate = total > 0 ? Math.round((present / total) * 100) : 0;
+
+      const modalBox = document.getElementById('modalBox');
+      modalBox.innerHTML = `
+        <div class="text-center">
+          <div class="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-3">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+          </div>
+          <h3 class="text-lg font-bold text-slate-800">হাজিরা সম্পন্ন হয়েছে!</h3>
+          <p class="text-xs text-slate-500 mt-0.5">${activeAttendanceClass.class_name} • ${getFormattedBengaliDate(getTodayDateStr())}</p>
+
+          <div class="grid grid-cols-3 gap-2 my-4">
+            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+              <span class="text-[11px] text-slate-500 font-medium">মোট</span>
+              <p class="text-base font-bold text-slate-800">${toBengaliNumber(total)}</p>
+            </div>
+            <div class="bg-emerald-50 p-2.5 rounded-xl border border-emerald-100">
+              <span class="text-[11px] text-emerald-700 font-medium">উপস্থিত</span>
+              <p class="text-base font-bold text-emerald-700">${toBengaliNumber(present)}</p>
+            </div>
+            <div class="bg-red-50 p-2.5 rounded-xl border border-red-100">
+              <span class="text-[11px] text-red-700 font-medium">অনুপস্থিত</span>
+              <p class="text-base font-bold text-red-700">${toBengaliNumber(absent)}</p>
+            </div>
+          </div>
+
+          <div class="text-left my-3 bg-slate-50 p-3 rounded-xl max-h-36 overflow-y-auto border border-slate-200">
+            <p class="text-xs font-bold text-slate-700 mb-1.5">অনুপস্থিত শিক্ষার্থীদের তালিকা (${toBengaliNumber(absentList.length)} জন):</p>
+            ${absentList.length === 0 ? `
+              <p class="text-xs text-emerald-600 font-medium">সবাই উপস্থিত ছিল! 🎉</p>
+            ` : `
+              <ul class="text-xs space-y-1 text-slate-600">
+                ${absentList.map(s => `<li>• রোল ${toBengaliNumber(s.roll_number)}: <span class="font-semibold">${s.student_name}</span></li>`).join('')}
+              </ul>
+            `}
+          </div>
+
+          <button onclick="finishAttendanceFlow()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl shadow transition mt-2">
+            সংরক্ষণ সম্পন্ন করুন
+          </button>
+        </div>
+      `;
+      openModal();
+    }
+
+    function finishAttendanceFlow() {
+      closeModal();
+      showToast('হাজিরা সফলভাবে সংরক্ষিত হয়েছে!');
+      navigate('classes');
+    }
+
+    // --- 5. SEARCH & MONTHLY REPORT SYSTEM ---
+    function renderStudentSearchView() {
+      const main = document.getElementById('mainView');
+      main.innerHTML = `
+        <div class="mb-4">
+          <h2 class="text-base font-bold text-slate-800">শিক্ষার্থী অনুসন্ধান</h2>
+          <p class="text-xs text-slate-500">শ্রেণি ও রোল দিয়ে শিক্ষার্থীর অতীত হাজিরার তথ্য দেখুন</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 mb-4 space-y-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">শ্রেণি নির্বাচন করুন</label>
+            <select id="searchClassSelect" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-medium focus:ring-1 focus:ring-emerald-500">
+              <option value="">-- শ্রেণি বাছাই করুন --</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">রোল নম্বর অথবা শিক্ষার্থীর নাম</label>
+            <input type="text" id="searchQuery" placeholder="যেমন: ৫ অথবা সুমাইয়া" 
+              class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-medium focus:ring-1 focus:ring-emerald-500" />
+          </div>
+          <button onclick="executeStudentSearch()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-xs shadow flex items-center justify-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <span>অনুসন্ধান করুন</span>
+          </button>
+        </div>
+
+        <div id="searchResultsArea" class="space-y-3"></div>
+      `;
+
+      // Populate classes dropdown
+      const sel = document.getElementById('searchClassSelect');
+      classesCache.forEach(c => {
+        sel.innerHTML += `<option value="${c.id}">${c.class_name} (${c.section_name || 'সাধারণ'})</option>`;
+      });
+    }
+
+    async function executeStudentSearch() {
+      const classId = document.getElementById('searchClassSelect').value;
+      const query = document.getElementById('searchQuery').value.trim();
+      const resultsArea = document.getElementById('searchResultsArea');
+
+      if (!classId) {
+        showToast('দয়া করে শ্রেণি নির্বাচন করুন', 'error');
+        return;
+      }
+
+      resultsArea.innerHTML = `<div class="p-8 text-center text-xs text-slate-400">তথ্য খোঁজা হচ্ছে...</div>`;
+
+      try {
+        if (!supabaseClient) return;
+
+        let q = supabaseClient.from('students').select('*').eq('class_id', classId);
+        if (query) {
+          // If query is digits, search by roll
+          if (/^\d+$/.test(query)) {
+            q = q.eq('roll_number', parseInt(query));
+          } else {
+            q = q.ilike('student_name', `%${query}%`);
+          }
+        }
+
+        const { data: students, error } = await q.order('roll_number', { ascending: true });
+        if (error || !students || students.length === 0) {
+          resultsArea.innerHTML = `<div class="bg-white rounded-2xl p-6 text-center text-xs text-slate-500 border border-slate-200">কোনো শিক্ষার্থী পাওয়া যায়নি।</div>`;
+          return;
+        }
+
+        let html = '';
+        for (const s of students) {
+          // Fetch attendance history for this student
+          const { data: attHistory } = await supabaseClient
+            .from('attendance')
+            .select('*')
+            .eq('student_id', s.id)
+            .order('attendance_date', { ascending: false });
+
+          const history = attHistory || [];
+          const totalDays = history.length;
+          const presentDays = history.filter(h => h.status === 'PRESENT').length;
+          const absentDays = history.filter(h => h.status === 'ABSENT').length;
+          const rate = totalDays > 0 ? Math.round((presentDays / totalDays) * 100) : 0;
+
+          html += `
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div class="flex items-center gap-2.5">
+                  <span class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 font-bold text-sm flex items-center justify-center">
+                    ${toBengaliNumber(s.roll_number)}
+                  </span>
+                  <div>
+                    <h3 class="font-bold text-slate-800 text-sm">${s.student_name}</h3>
+                    <p class="text-[11px] text-slate-500">রোল: ${toBengaliNumber(s.roll_number)}</p>
+                  </div>
+                </div>
+                <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">
+                  উপস্থিতি: ${toBengaliNumber(rate)}%
+                </span>
+              </div>
+
+              <div class="grid grid-cols-3 gap-2 my-3 text-center">
+                <div class="bg-slate-50 p-2 rounded-xl">
+                  <span class="text-[10px] text-slate-500">মোট দিন</span>
+                  <p class="text-xs font-bold text-slate-700">${toBengaliNumber(totalDays)}</p>
+                </div>
+                <div class="bg-emerald-50 p-2 rounded-xl">
+                  <span class="text-[10px] text-emerald-600">উপস্থিত</span>
+                  <p class="text-xs font-bold text-emerald-700">${toBengaliNumber(presentDays)}</p>
+                </div>
+                <div class="bg-red-50 p-2 rounded-xl">
+                  <span class="text-[10px] text-red-600">অনুপস্থিত</span>
+                  <p class="text-xs font-bold text-red-700">${toBengaliNumber(absentDays)}</p>
+                </div>
+              </div>
+
+              <div class="mt-2">
+                <p class="text-[11px] font-bold text-slate-600 mb-1.5">সাম্প্রতিক হাজিরার ইতিহাস:</p>
+                <div class="max-h-32 overflow-y-auto divide-y divide-slate-100 text-xs">
+                  ${history.length === 0 ? `
+                    <p class="text-slate-400 text-[11px] py-2">কোনো অতীত রেকর্ড নেই।</p>
+                  ` : history.slice(0, 8).map(h => `
+                    <div class="py-1.5 flex items-center justify-between">
+                      <span class="text-slate-600">${getFormattedBengaliDate(h.attendance_date)}</span>
+                      <span class="text-[11px] font-bold ${h.status === 'PRESENT' ? 'text-emerald-600' : 'text-red-500'}">
+                        ${h.status === 'PRESENT' ? 'উপস্থিত' : 'অনুপস্থিত'}
+                      </span>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            </div>
+          `;
+        }
+
+        resultsArea.innerHTML = html;
+      } catch (err) {
+        console.error(err);
+        resultsArea.innerHTML = `<div class="p-4 text-center text-xs text-red-500">অনুসন্ধান ব্যর্থ হয়েছে।</div>`;
+      }
+    }
+
+    function renderMonthlyReportView() {
+      const main = document.getElementById('mainView');
+      const d = new Date();
+      const currentMonth = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+
+      main.innerHTML = `
+        <div class="mb-4">
+          <h2 class="text-base font-bold text-slate-800">মাসিক প্রতিবেদন</h2>
+          <p class="text-xs text-slate-500">নির্দিষ্ট শ্রেণির পূর্ণাঙ্গ মাসিক হাজিরা সারাংশ</p>
+        </div>
+
+        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 mb-4 space-y-3">
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">শ্রেণি নির্বাচন</label>
+              <select id="reportClassSelect" class="w-full px-2.5 py-2 rounded-xl border border-slate-300 text-xs font-medium focus:ring-1 focus:ring-emerald-500">
+                <option value="">-- শ্রেণি বাছাই --</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">মাস ও বছর</label>
+              <input type="month" id="reportMonthSelect" value="${currentMonth}" 
+                class="w-full px-2.5 py-2 rounded-xl border border-slate-300 text-xs font-medium focus:ring-1 focus:ring-emerald-500" />
+            </div>
+          </div>
+          <button onclick="generateMonthlyReport()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 rounded-xl text-xs shadow flex items-center justify-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            <span>প্রতিবেদন তৈরি করুন</span>
+          </button>
+        </div>
+
+        <div id="monthlyReportOutput" class="space-y-3"></div>
+      `;
+
+      const sel = document.getElementById('reportClassSelect');
+      classesCache.forEach(c => {
+        sel.innerHTML += `<option value="${c.id}">${c.class_name} (${c.section_name || 'সাধারণ'})</option>`;
+      });
+    }
+
+    async function generateMonthlyReport() {
+      const classId = document.getElementById('reportClassSelect').value;
+      const monthStr = document.getElementById('reportMonthSelect').value; // 'YYYY-MM'
+      const output = document.getElementById('monthlyReportOutput');
+
+      if (!classId) {
+        showToast('দয়া করে শ্রেণি নির্বাচন করুন', 'error');
+        return;
+      }
+
+      output.innerHTML = `<div class="p-8 text-center text-xs text-slate-400">প্রতিবেদন তৈরি হচ্ছে...</div>`;
+
+      try {
+        if (!supabaseClient) return;
+
+        // Fetch students of class
+        const { data: students } = await supabaseClient
+          .from('students')
+          .select('*')
+          .eq('class_id', classId)
+          .order('roll_number', { ascending: true });
+
+        if (!students || students.length === 0) {
+          output.innerHTML = `<div class="p-6 bg-white rounded-2xl text-center text-xs text-slate-500 border border-slate-200">কোনো শিক্ষার্থী পাওয়া যায়নি।</div>`;
+          return;
+        }
+
+        // Fetch attendance for this class in this month
+        const startDate = `${monthStr}-01`;
+        const endDate = `${monthStr}-31`;
+
+        const { data: attData } = await supabaseClient
+          .from('attendance')
+          .select('student_id, attendance_date, status')
+          .eq('class_id', classId)
+          .gte('attendance_date', startDate)
+          .lte('attendance_date', endDate);
+
+        const studentStats = {};
+        students.forEach(s => {
+          studentStats[s.id] = { present: 0, absent: 0, total: 0 };
+        });
+
+        const distinctDates = new Set();
+        (attData || []).forEach(a => {
+          distinctDates.add(a.attendance_date);
+          if (studentStats[a.student_id]) {
+            studentStats[a.student_id].total++;
+            if (a.status === 'PRESENT') studentStats[a.student_id].present++;
+            else studentStats[a.student_id].absent++;
+          }
+        });
+
+        const totalSchoolDays = distinctDates.size;
+
+        let html = `
+          <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div>
+                <h3 class="font-bold text-slate-800 text-sm">হাজিরা সারাংশ</h3>
+                <p class="text-[11px] text-slate-500">মোট কার্যকর হাজিরা দিবস: ${toBengaliNumber(totalSchoolDays)} দিন</p>
+              </div>
+              <button onclick="window.print()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-xl font-bold flex items-center gap-1">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                <span>প্রিন্ট</span>
+              </button>
+            </div>
+
+            <div class="overflow-x-auto mt-3">
+              <table class="w-full text-left text-xs">
+                <thead>
+                  <tr class="bg-slate-50 text-slate-600 font-bold border-b border-slate-200">
+                    <th class="py-2 px-2 text-center">রোল</th>
+                    <th class="py-2 px-2">নাম</th>
+                    <th class="py-2 px-1 text-center text-emerald-600">উপস্থিত</th>
+                    <th class="py-2 px-1 text-center text-red-600">অনুপস্থিত</th>
+                    <th class="py-2 px-2 text-right">শতকরা</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                  ${students.map(s => {
+                    const st = studentStats[s.id];
+                    const rate = st.total > 0 ? Math.round((st.present / st.total) * 100) : 0;
+                    return `
+                      <tr class="hover:bg-slate-50">
+                        <td class="py-2.5 px-2 font-bold text-slate-700 text-center">${toBengaliNumber(s.roll_number)}</td>
+                        <td class="py-2.5 px-2 font-semibold text-slate-800">${s.student_name}</td>
+                        <td class="py-2.5 px-1 text-center font-bold text-emerald-600">${toBengaliNumber(st.present)}</td>
+                        <td class="py-2.5 px-1 text-center font-bold text-red-500">${toBengaliNumber(st.absent)}</td>
+                        <td class="py-2.5 px-2 text-right font-extrabold text-slate-700">${toBengaliNumber(rate)}%</td>
+                      </tr>
+                    `;
+                  }).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+
+        output.innerHTML = html;
+      } catch (err) {
+        console.error(err);
+        output.innerHTML = `<div class="p-4 text-center text-xs text-red-500">প্রতিবেদন তৈরিতে ত্রুটি ঘটেছে।</div>`;
+      }
+    }
+
+    // --- 6. MODALS: ADD CLASS & ADD STUDENT ---
+    function showQuickAddModal() {
+      const modalBox = document.getElementById('modalBox');
+      modalBox.innerHTML = `
+        <div class="text-center">
+          <h3 class="text-base font-bold text-slate-800 mb-1">নতুন তথ্য যোগ করুন</h3>
+          <p class="text-xs text-slate-500 mb-4">আপনি কি শ্রেণি নাকি শিক্ষার্থী যোগ করতে চান?</p>
+          <div class="grid grid-cols-2 gap-3">
+            <button onclick="showAddClassModal()" class="p-4 rounded-2xl border-2 border-emerald-100 hover:border-emerald-500 bg-emerald-50 text-emerald-700 flex flex-col items-center gap-2">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+              <span class="text-xs font-bold">+ নতুন শ্রেণি</span>
+            </button>
+            <button onclick="showAddStudentModal()" class="p-4 rounded-2xl border-2 border-teal-100 hover:border-teal-500 bg-teal-50 text-teal-700 flex flex-col items-center gap-2">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+              <span class="text-xs font-bold">+ নতুন শিক্ষার্থী</span>
+            </button>
+          </div>
+          <button onclick="closeModal()" class="mt-4 w-full py-2 text-xs font-semibold text-slate-500 hover:text-slate-700">বন্ধ করুন</button>
+        </div>
+      `;
+      openModal();
+    }
+
+    function showAddClassModal() {
+      const modalBox = document.getElementById('modalBox');
+      modalBox.innerHTML = `
+        <div>
+          <h3 class="text-base font-bold text-slate-800 mb-1">নতুন শ্রেণি ও শাখা যোগ</h3>
+          <p class="text-xs text-slate-500 mb-4">শ্রেণির নাম ও শাখা উল্লেখ করুন</p>
+          <form onsubmit="handleCreateClass(event)" class="space-y-3 text-left">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">শ্রেণির নাম *</label>
+              <input type="text" id="newClassName" required placeholder="যেমন: ৩য় শ্রেণি" 
+                class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:ring-1 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">শাখার নাম</label>
+              <input type="text" id="newSectionName" placeholder="যেমন: ক শাখা / শাপলা" 
+                class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:ring-1 focus:ring-emerald-500" />
+            </div>
+            <div class="flex gap-2 pt-2">
+              <button type="button" onclick="closeModal()" class="flex-1 py-2.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-600">বাতিল</button>
+              <button type="submit" class="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow">সংরক্ষণ করুন</button>
+            </div>
+          </form>
+        </div>
+      `;
+      openModal();
+    }
+
+    async function handleCreateClass(e) {
+      e.preventDefault();
+      const className = document.getElementById('newClassName').value.trim();
+      const sectionName = document.getElementById('newSectionName').value.trim() || 'ক';
+
+      try {
+        if (supabaseClient) {
+          const newClass = {
+            id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : 'cls_' + Date.now(),
+            class_name: className,
+            section_name: sectionName,
+            created_by: currentUser ? currentUser.id : null
+          };
+          const { error } = await supabaseClient.from('classes').insert([newClass]);
+          if (error) throw error;
+        }
+        closeModal();
+        showToast('শ্রেণি সফলভাবে যোগ করা হয়েছে');
+        loadClasses();
+      } catch (err) {
+        console.error(err);
+        showToast('শ্রেণি সংরক্ষণে সমস্যা হয়েছে', 'error');
+      }
+    }
+
+    function showAddStudentModal() {
+      if (!classesCache || classesCache.length === 0) {
+        showToast('প্রথমে একটি শ্রেণি তৈরি করুন', 'error');
+        showAddClassModal();
+        return;
+      }
+
+      const modalBox = document.getElementById('modalBox');
+      modalBox.innerHTML = `
+        <div>
+          <h3 class="text-base font-bold text-slate-800 mb-1">নতুন শিক্ষার্থী যোগ</h3>
+          <p class="text-xs text-slate-500 mb-4">শ্রেণি বাছাই করে রোল ও নাম দিন</p>
+          <form onsubmit="handleCreateStudent(event)" class="space-y-3 text-left">
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">শ্রেণি নির্বাচন *</label>
+              <select id="newStudentClassId" required class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:ring-1 focus:ring-emerald-500">
+                ${classesCache.map(c => `<option value="${c.id}">${c.class_name} (${c.section_name || 'সাধারণ'})</option>`).join('')}
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">রোল নম্বর *</label>
+              <input type="number" id="newStudentRoll" required min="1" placeholder="যেমন: ১" 
+                class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:ring-1 focus:ring-emerald-500" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">শিক্ষার্থীর নাম *</label>
+              <input type="text" id="newStudentName" required placeholder="যেমন: তানভীর হাসান" 
+                class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:ring-1 focus:ring-emerald-500" />
+            </div>
+            <div class="flex gap-2 pt-2">
+              <button type="button" onclick="closeModal()" class="flex-1 py-2.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-600">বাতিল</button>
+              <button type="submit" class="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow">সংরক্ষণ করুন</button>
+            </div>
+          </form>
+        </div>
+      `;
+      openModal();
+    }
+
+    async function handleCreateStudent(e) {
+      e.preventDefault();
+      const classId = document.getElementById('newStudentClassId').value;
+      const rollNumber = parseInt(document.getElementById('newStudentRoll').value);
+      const studentName = document.getElementById('newStudentName').value.trim();
+
+      try {
+        if (supabaseClient) {
+          const newStudent = {
+            id: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : 'std_' + Date.now(),
+            class_id: classId,
+            roll_number: rollNumber,
+            student_name: studentName
+          };
+          const { error } = await supabaseClient.from('students').insert([newStudent]);
+          if (error) throw error;
+        }
+        closeModal();
+        showToast('শিক্ষার্থী সফলভাবে যোগ করা হয়েছে');
+        loadClasses();
+      } catch (err) {
+        console.error(err);
+        showToast('শিক্ষার্থী সংরক্ষণে সমস্যা হয়েছে', 'error');
+      }
+    }
+
+    // --- 7. DEMO SEED DATA GENERATOR ---
+    async function seedSampleData() {
+      const btn = event?.target;
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'নমুনা ডেটা তৈরি হচ্ছে...';
+      }
+
+      try {
+        if (!supabaseClient) throw new Error('Supabase client not ready');
+
+        // Sample classes
+        const sampleClasses = [
+          { id: 'cls_class_1', class_name: '১ম শ্রেণি', section_name: 'গোলাপ', created_by: currentUser?.id },
+          { id: 'cls_class_2', class_name: '২য় শ্রেণি', section_name: 'শাপলা', created_by: currentUser?.id },
+          { id: 'cls_class_3', class_name: '৩য় শ্রেণি', section_name: 'পদ্ম', created_by: currentUser?.id },
+        ];
+
+        for (const c of sampleClasses) {
+          await supabaseClient.from('classes').upsert(c);
+        }
+
+        // Sample students for Class 1, 2, 3
+        const sampleStudents = [
+          // Class 1
+          { id: 'std_1_1', class_id: 'cls_class_1', roll_number: 1, student_name: 'আরিফ আহমেদ' },
+          { id: 'std_1_2', class_id: 'cls_class_1', roll_number: 2, student_name: 'সুমাইয়া আক্তার' },
+          { id: 'std_1_3', class_id: 'cls_class_1', roll_number: 3, student_name: 'সাকিব আল হাসান' },
+          { id: 'std_1_4', class_id: 'cls_class_1', roll_number: 4, student_name: 'ফারহানা ইসলাম' },
+          { id: 'std_1_5', class_id: 'cls_class_1', roll_number: 5, student_name: 'রাকিবুল হাসান' },
+          // Class 2
+          { id: 'std_2_1', class_id: 'cls_class_2', roll_number: 1, student_name: 'তাহমিদ ইসলাম' },
+          { id: 'std_2_2', class_id: 'cls_class_2', roll_number: 2, student_name: 'নুসরাত জাহান' },
+          { id: 'std_2_3', class_id: 'cls_class_2', roll_number: 3, student_name: 'মাহমুদুল হক' },
+          // Class 3
+          { id: 'std_3_1', class_id: 'cls_class_3', roll_number: 1, student_name: 'আয়েশা সিদ্দিকা' },
+          { id: 'std_3_2', class_id: 'cls_class_3', roll_number: 2, student_name: 'জাহিদুল ইসলাম' },
+        ];
+
+        for (const s of sampleStudents) {
+          await supabaseClient.from('students').upsert(s);
+        }
+
+        showToast('নমুনা শ্রেণি ও শিক্ষার্থী সফলভাবে লোড হয়েছে!');
+        loadClasses();
+      } catch (err) {
+        console.error(err);
+        showToast('নমুনা ডেটা তৈরিতে সমস্যা হয়েছে', 'error');
+        loadClasses();
+      }
+    }
+
+    // --- MODAL UTILS ---
+    function openModal() {
+      document.getElementById('modalContainer').classList.remove('hidden');
+    }
+    function closeModal() {
+      document.getElementById('modalContainer').classList.add('hidden');
+    }
+
+    // --- INITIAL BOOTSTRAP ---
+    window.addEventListener('DOMContentLoaded', () => {
+      initSession();
+    });
+  </script>
+</body>
+</html>

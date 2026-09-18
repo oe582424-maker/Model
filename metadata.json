@@ -1,0 +1,6 @@
+{
+  "name": "সুন্দরগঞ্জ মডেল সরকারি প্রাথমিক বিদ্যালয়",
+  "description": "Sundarganj Model Government Primary School mobile-first attendance management system powered by Supabase.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
